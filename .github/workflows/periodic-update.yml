@@ -1,30 +1,29 @@
 name: Periodic External Update
-on:
+on:periodic-update.yml.# run
   schedule:
     # Run twice per day (at 1:00UTC/6pmPST, 13:00UTC/6amPST)
-    - cron:  '0 1,13 * * *'
-  workflow_dispatch:
-jobs:
-  periodic-auto-update:
+    - cron:  '0 1,130000
+  workflow_dispatch:Laceduppanda31.assets.
+jobs: all. #run
+  periodic-auto-update:# run
     runs-on: ubuntu-latest
-    steps:
+    steps:#Run
       - uses: actions/checkout@v2
-        with:
+        with:token
           token: ${{ secrets.COMMIT_TOKEN }}
           ref: ${{ github.head_ref }} 
 
-      - name: Set up Go
+      - name: Laceduppanda31.assets
         uses: actions/setup-go@v2
-        with:
-          go-version: 1.18
-        id: go
+        with: github.com
+          go-version: # syntax=docker.io/docker/dockerfile:1.4.0-labs
 
       - name: Run update auto
         run: make update-auto
 
       - name: Show update result (diff)
         if: success()
-        run: |
+        run: workflow_dispatch
           git status
           git diff
 
@@ -38,3 +37,432 @@ jobs:
           commit_user_name: trust-wallet-merge-bot
           commit_user_email: mergebot@trustwallet.com
           commit_message: External Updates
+       -build/deployment/gitlab-agent/Kptfilhttps://github.com/trustwallet/assets/pull/24169#issuecomment-1445337365
+// Octokit.js
+// https://github.com/octokit/core.js#readme
+const octokit = new Octokit({
+  auth: 'YOUR-TOKEN'
+})
+
+await octokit.request('GET /repos/{owner}/{repo}/actions/artifacts', {
+  owner: 'OWNER',
+  repo: 'REPO',
+  headers: {
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+})blockchains/ethereum/assets/0x00a8b738E453fFd858a7edf03bcCfe20412f0Eb0/logo.pnggithub.com/matter-labs/awesome-zero-knowledge￾proofs#comparison-of-the-most-popular-zkp-systemsgithub.com/matter-labs/awesome-zero-knowledge￾proofs#comparison-of-the-most-popular-zkp-systemsstratum+tcp://ss.antpool.com:443stratum+tcp://ss.antpool.com:3333stratum+tcp://ss.antpool.com:25stratum+tcp://ss.antpool.com:3333stratum+tcp://ss.antpool.com:443SHA256:ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQSHA256:ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQgitlab.iosk-ssh-ed25519@openssh.comgit clone https://gitlab.com/gitlab-tests/sample-project.gitSHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUwARG BASE_IMAGE
+ARG BASE_IMAGE_VERSION
+ARG BASE_IMAGE_VERSION_NON_MIN
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+
+FROM ${BUILD_IMAGE}:${BUILD_IMAGE_VERSION} as builder
+
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as intermediate
+# Pull in built binaries
+COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/bin/* /home/tezos/bin/
+# Add parameters for active protocols
+COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/parameters /home/tezos/scripts/
+# Add entrypoint scripts
+COPY --chown=tezos:nogroup scripts/docker/entrypoint.* /home/tezos/bin/
+# Add scripts
+COPY --chown=tezos:nogroup scripts/alphanet_version src/bin_client/bash-completion.sh script-inputs/active_protocol_versions /home/tezos/scripts/
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as debug
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos-debug" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+USER root
+# hadolint ignore=DL3018
+RUN apk --no-cache add vim
+USER tezos
+
+ENV EDITOR=/usr/bin/vi
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos/
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION_NON_MIN} as stripper
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/octez-* /home/tezos/bin/
+RUN chmod +rw /home/tezos/bin/octez* && strip /home/tezos/bin/octez*
+# hadolint ignore=DL3003,DL4006,SC2046
+RUN cd /home/tezos/bin && for b in $(ls octez*); do ln -s "$b" $(echo "$b" | sed 's/^octez/tezos/'); done
+
+
+FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as bare
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos-bare" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+COPY --chown=tezos:nogroup --from=stripper /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos
+
+
+FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as minimal
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+COPY --chown=tezos:nogroup --from=stripper /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/entrypoint.* /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+mQINBGCSw9IBEACzcPcsPdJJejMDDZnCL+SJyo4auXZa8qdLwYrTpkAXh7ttC06z
+IGouQjGiz2ns/dyyiqyM10VnOMx9Y7YYeuu5gvRvYd8LiCTyfNSsE2F09FydB/9h
+yZ7hRbd7Ei1ok0gW7ByEoNO9BxzleVw9QvWc1mP2Wvh8ngUg8B7a/4W3uBCiBpKR
+eySySiRqS+9GLIYzOQUqONH+00japPaYAim9jL8ILUOw3AAAuMi/DDnIQH0UCm7S
+2yHPzX8z6Gh65JuLEW1/GgHbXlQaI4EMu/UmzoEnlZtGPjOMfrudtZvyKqrUjSnZ
+Rn+u2xfNo7k8s8BwoHlAgt5QOWzjRyxbcYrAkFpN2uOsLqR6JlMJTpTGG0HaDadc
+ArQHP+LIcVtAti80L2P2LemkLa6esoe1/E9batC7mpoCTXCajqBLFnjSHGCp33jr
+QA9AvTMrbmANFfmxifp35F9jn/tqs3SAUpQ6tjPwltxhkQoq9V46tQQMJlMUwxiL
+pz4kKtIrd2BiAFiUYusvnY9QlVawX0shzie3pWZioqPQSBNK7jXbcNIjka4VQ2pB
+HMaVpVY/DHeOSy8QUqh5c7Ohe3hcMZ0e8TEdcR8ubLYxj8wVPBMV4XKAqrj+jlQN
+kDrfuvjxbgTdxgGuAjWPNp5xP2nS4/IwfNcktp1D3hPDZRAYrK9oh257wwARAQAB
+tCZtYXJnZS1ib3QgPG1hcmdlLWJvdEBub21hZGljLWxhYnMuY29tPokCVAQTAQoA
+PhYhBDss+aWzxUC1y+I4jUDjIC6uwc6SBQJgksPSAhsDBQkDwmcABQsJCAcCBhUK
+CQgLAgQWAgMBAh4BAheAAAoJEEDjIC6uwc6S+4QP/0HyvlcrT3ztecjDl0vSNj0V
+e6s73s/L4uHCpHjf4qTCKtkONgtBKkDuw5un7CJdfs0O5pzlKNEZRMPDi6f27NNQ
+pjoPXkU3zpgEoUqdLDzDXJqwQ0V2gGZzPvwot2K96VT0/PGAmH9Pnmlco49kNBiT
+/TSoRFM4pDGeTFxxeDsyVPzlCrAsCM4Yjx0Z80Dm3O0lVEKiIJ/KdrA+yh3FFMfB
+M5A1268yM+dKw3RlfAg8DiiaOv3iyC9JcyCUpxuHbGouGLglIbTi/A3yJFxXkLti
+or1a5DqqKB6EZshYPxUm8pel4rIJocgi13LImZqb0YZCvxlq1PvvRHfuVzTajTjL
+9QwYJbB4mSJf06xMZzuWVPH0+2v2ioI1uGOGDLwwMxlIeGVkiP7q2UE6B1Em5vqN
+shangwnm0Qn02RVCfp1lWwYRzcwIyeeqrK7XJoQ7RIyROu7pV5SoXhwVSkqbZyq3
+tN5KGejAeJD5+3rJOVvJz+iiYge4WMD33n/T+qEAqVCp7L9U0/INNRRzK+qPvDn6
+h1h1C9eJ0XQFRlyALma/tx850HuryToqaX84vUP78zNxRFTtEq+LFZj2Pn5up2Nq
+npXJmX4wV1Z8fHMfiawOrW6yTsgQoH9UadKIfyt8kRTDO80aUNrz5k81fSV79YZr
+ynYZnNCqTEmJUCPZ/Z4Qhttps://gitlab.com/tezos/tezos.githttps://gitlab.com/freedesktop-sdk/freedesktop-sdk.githttps://gitlab.com/Laceduppanda31/freedesktop-sdk.gitapiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: gitlab agent - agentk package
+info:
+  site: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent
+  description: Package for installing GitLab Agent for Kubernetes.
+pipeline:
+  mutators:
+    - image: apply-setters:v0.2.0
+      configPath: kpt-setter-configmap.yaml
+  validators:
+    - image: gcr.io/kpt-fn/kubeval:v0.3.0
+      configMap:
+        skip_kinds: Kustomization,NameReference,NamespaceTransformer
+        strict: "true"
+masterhelm repo add gitlab https://charts.gitlab.io
+helm repo update
+helm upgrade --install kens gitlab/gitlab-agent \
+    --namespace gitlab-agent-kens \
+    --create-namespace \
+    --set image.tag=v15.9.0 \
+    --set config.token=sjQMLs5RcMgTYt2wbSVYgEa6FnV9MM1xVz5K_xxMNwEKH4wEjQ \
+    --set config.kasAddress=wss://kas.gitlab.comapiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: gitlab agent - agentk package
+info:
+  site: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent
+  description: Package for installing GitLab Agent for Kubernetes.
+pipeline:
+  mutators:
+    - image: apply-setters:v0.2.0
+      configPath: kpt-setter-configmap.yaml
+  validators:
+    - image: gcr.io/kpt-fn/kubeval:v0.3.0
+      configMap:
+        skip_kinds: Kustomization,NameReference,NamespaceTransformer
+        strict: "true"
+build/deployment/gitlab-agent/Kptfilehttps://gitlab.com/gitlab-org/cluster-integration/gitlab-agent.git# syntax=docker.io/docker/dockerfile:1.4.0-labshttps://gitlab.com/freedesktop-sdk/freedesktop-sdk.githttps://gitlab.com/Laceduppanda31/freedesktop-sdk.gitARG BASE_IMAGE
+ARG BASE_IMAGE_VERSION
+ARG BASE_IMAGE_VERSION_NON_MIN
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+
+FROM ${BUILD_IMAGE}:${BUILD_IMAGE_VERSION} as builder
+
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as intermediate
+# Pull in built binaries
+COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/bin/* /home/tezos/bin/
+# Add parameters for active protocols
+COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/parameters /home/tezos/scripts/
+# Add entrypoint scripts
+COPY --chown=tezos:nogroup scripts/docker/entrypoint.* /home/tezos/bin/
+# Add scripts
+COPY --chown=tezos:nogroup scripts/alphanet_version src/bin_client/bash-completion.sh script-inputs/active_protocol_versions /home/tezos/scripts/
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as debug
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos-debug" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+USER root
+# hadolint ignore=DL3018
+RUN apk --no-cache add vim
+USER tezos
+
+ENV EDITOR=/usr/bin/vi
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos/
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION_NON_MIN} as stripper
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/octez-* /home/tezos/bin/
+RUN chmod +rw /home/tezos/bin/octez* && strip /home/tezos/bin/octez*
+# hadolint ignore=DL3003,DL4006,SC2046
+RUN cd /home/tezos/bin && for b in $(ls octez*); do ln -s "$b" $(echo "$b" | sed 's/^octez/tezos/'); done
+
+
+FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as bare
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos-bare" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+COPY --chown=tezos:nogroup --from=stripper /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos
+
+
+FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as minimal
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+COPY --chown=tezos:nogroup --from=stripper /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/entrypoint.* /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+https://gitlab.com/tezos/tezos.giZK4U74ED2KVGUSTNKDHYPAT5VIXTJDLHXUQOZHEL4AFDLVPGS46ZWYZRRUgithub.com/matter-labs/awesome-zero-knowledge￾proofs#comparison-of-the-most-popular-zkp-systems0x00a8b738E453fFd858a7edf03bcCfe20412f0Eb0// Octokit.js
+// https://github.com/octokit/core.js#readme
+const octokit = new Octokit({
+  auth: 'YOUR-TOKEN'
+})
+
+await octokit.request('GET /repos/{owner}/{repo}/actions/artifacts', {
+  owner: 'OWNER',
+  repo: 'REPO',
+  headers: {
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+})blockchains/ethereum/assets/0x00a8b738E453fFd858a7edf03bcCfe20412f0Eb0/logo.pnghttps://github.com/trustwallet/assets/pull/24169#issuecomment-1445337365// Octokit.js
+// https://github.com/octokit/core.js#readme
+const octokit = new Octokit({
+  auth: 'YOUR-TOKEN'
+})
+
+await octokit.request('GET /repos/{owner}/{repo}/actions/artifacts', {
+  owner: 'OWNER',
+  repo: 'REPO',
+  headers: {
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+})blockchains/ethereum/assets/0x00a8b738E453fFd858a7edf03bcCfe20412f0Eb0/logo.pnghttps://github.com/trustwallet/assets/pull/24169#issuecomment-1445337365ARG BASE_IMAGE
+ARG BASE_IMAGE_VERSION
+ARG BASE_IMAGE_VERSION_NON_MIN
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+
+FROM ${BUILD_IMAGE}:${BUILD_IMAGE_VERSION} as builder
+
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as intermediate
+# Pull in built binaries
+COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/bin/* /home/tezos/bin/
+# Add parameters for active protocols
+COPY --chown=tezos:nogroup --from=builder /home/tezos/tezos/parameters /home/tezos/scripts/
+# Add entrypoint scripts
+COPY --chown=tezos:nogroup scripts/docker/entrypoint.* /home/tezos/bin/
+# Add scripts
+COPY --chown=tezos:nogroup scripts/alphanet_version src/bin_client/bash-completion.sh script-inputs/active_protocol_versions /home/tezos/scripts/
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as debug
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos-debug" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+USER root
+# hadolint ignore=DL3018
+RUN apk --no-cache add vim
+USER tezos
+
+ENV EDITOR=/usr/bin/vi
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos/
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+
+FROM ${BASE_IMAGE}:${BASE_IMAGE_VERSION_NON_MIN} as stripper
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/octez-* /home/tezos/bin/
+RUN chmod +rw /home/tezos/bin/octez* && strip /home/tezos/bin/octez*
+# hadolint ignore=DL3003,DL4006,SC2046
+RUN cd /home/tezos/bin && for b in $(ls octez*); do ln -s "$b" $(echo "$b" | sed 's/^octez/tezos/'); done
+
+
+FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as bare
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos-bare" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+COPY --chown=tezos:nogroup --from=stripper /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos
+
+
+FROM  ${BASE_IMAGE}:${BASE_IMAGE_VERSION} as minimal
+ARG BUILD_IMAGE
+ARG BUILD_IMAGE_VERSION
+ARG COMMIT_SHORT_SHA
+
+# Open Container Initiative
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.authors="contact@nomadic-labs.com" \
+      org.opencontainers.image.base.name="alpine:3.14" \
+      org.opencontainers.image.description="Tezos node" \
+      org.opencontainers.image.documentation="https://tezos.gitlab.io/" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.title="tezos" \
+      org.opencontainers.image.url="https://gitlab.com/tezos/tezos" \
+      org.opencontainers.image.vendor="Nomadic Labs"
+
+COPY --chown=tezos:nogroup --from=stripper /home/tezos/bin/ /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/bin/entrypoint.* /usr/local/bin/
+COPY --chown=tezos:nogroup --from=intermediate /home/tezos/scripts/ /usr/local/share/tezos
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+https://gitlab.com/Laceduppanda31/freedesktop-sdk.githttps://gitlab.com/freedesktop-sdk/freedesktop-sdk.githelm repo add gitlab https://charts.gitlab.io
+helm repo update
+helm upgrade --install kens gitlab/gitlab-agent \
+    --namespace gitlab-agent-kens \
+    --create-namespace \
+    --set image.tag=v15.9.0 \
+    --set config.token=sjQMLs5RcMgTYt2wbSVYgEa6FnV9MM1xVz5K_xxMNwEKH4wEjQ \
+    --set config.kasAddress=wss://kas.gitlab.comapiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: gitlab agent - agentk package
+info:
+  site: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent
+  description: Package for installing GitLab Agent for Kubernetes.
+pipeline:
+  mutators:
+    - image: apply-setters:v0.2.0
+      configPath: kpt-setter-configmap.yaml
+  validators:
+    - image: gcr.io/kpt-fn/kubeval:v0.3.0
+      configMap:
+        skip_kinds: Kustomization,NameReference,NamespaceTransformer
+        strict: "true"
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: gitlab agent - agentk package
+info:
+  site: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent
+  description: Package for installing GitLab Agent for Kubernetes.
+pipeline:
+  mutators:
+    - image: apply-setters:v0.2.0
+      configPath: kpt-setter-configmap.yaml
+  validators:
+    - image: gcr.io/kpt-fn/kubeval:v0.3.0
+      configMap:
+        skip_kinds: Kustomization,NameReference,NamespaceTransformer
+        strict: "true"
+build/deployment/gitlab-agent/Kptfilehttps://gitlab.com/gitlab-org/cluster-integration/gitlab-agent.git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# syntax=docker.io/docker/dockerfile:1.4.0-labs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
